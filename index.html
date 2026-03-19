@@ -1,48 +1,2053 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6115836208725233"
-     crossorigin="anonymous"></script>
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="style.css">
-    <title>Accessibility GUI</title>
-    <!-- Matomo -->
-<script>
-    var _paq = window._paq = window._paq || [];
-    /* tracker methods like "setCustomDimension" should be called before "trackPageView" */
-    _paq.push(['trackPageView']);
-    _paq.push(['enableLinkTracking']);
-    (function() {
-      var u="https://paulrossdev.matomo.cloud/";
-      _paq.push(['setTrackerUrl', u+'matomo.php']);
-      _paq.push(['setSiteId', '1']);
-      var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
-      g.async=true; g.src='//cdn.matomo.cloud/paulrossdev.matomo.cloud/matomo.js'; s.parentNode.insertBefore(g,s);
-    })();
-  </script>
-  <!-- End Matomo Code -->
-  
-</head>
-<body>
-    <div class="home-container">
-        <h1 class="center-text">I want to...</h1>
-        <div class="options-container">
-            <a href="/options/alt-text.html" class="option">Add alt text to an element</a>
-            <a href="/options/table-to-flexbox.html" class="option">Convert a table to flexbox</a>
-            <a href="/options/table-to-grid.html" class="option">Convert a table to grid</a>
-            <a href="/options/adjust-border.html" class="option">Adjust border</a>
-        </div>
-        <a style="margin-top: 1em;" href="/options/image-over-text.html" class="option">Add Image Over Text (beta)</a>
 
-        <p class="coming-soon-message">More features coming soon!</p>
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Accessibility GUI</title>
+    <link rel="icon" type="image/svg+xml"
+        href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='8' fill='%237c7cff'/><circle cx='16' cy='8' r='2.5' fill='white'/><path d='M10 13h12M16 13v10M12 23l4-4 4 4' stroke='white' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round' fill='none'/></svg>" />
+    <!-- Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+        gtag('js', new Date());
+        gtag('config', 'G-XXXXXXXXXX');
+        // Track tool navigation
+        window.trackTool = function (toolName) {
+            gtag('event', 'tool_view', { tool_name: toolName });
+        };
+        // Track scans/fixes
+        window.trackScan = function (toolName, issueCount) {
+            gtag('event', 'scan_run', { tool_name: toolName, issues_found: issueCount });
+        };
+    </script>
+    <!-- Hits counter (visible badge) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap"
+        rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/@mdi/font@7/css/materialdesignicons.min.css" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/vuetify@3.4.0/dist/vuetify.min.css" rel="stylesheet" />
+    <style>
+        :root {
+            --bg: #07070f;
+            --surface: #0e0e1c;
+            --card: #12121f;
+            --card2: #16162a;
+            --border: rgba(255, 255, 255, 0.06);
+            --border2: rgba(255, 255, 255, 0.11);
+            --accent: #7c7cff;
+            --accent2: #a78bfa;
+            --cyan: #5dd6ff;
+            --green: #4ade80;
+            --mono: 'Courier New', Courier, monospace;
+            --sans: 'Inter', system-ui, sans-serif;
+            --radius: 14px;
+        }
+
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+        }
+
+        html,
+        body {
+            background: var(--bg);
+            margin: 0;
+            font-family: var(--sans);
+        }
+
+        /* ─── NAV ───────────────────────────────────────────── */
+        #topbar {
+            height: 56px;
+            background: rgba(14, 14, 28, 0.92);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            padding: 0 20px;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 200;
+            gap: 0;
+        }
+
+        .logo {
+            font-family: var(--sans);
+            font-size: 16px;
+            font-weight: 900;
+            color: #fff;
+            margin-right: 24px;
+            letter-spacing: -.03em;
+            white-space: nowrap;
+            flex-shrink: 0;
+        }
+
+        .logo span {
+            background: linear-gradient(135deg, var(--accent), var(--cyan));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .navtabs {
+            display: flex;
+            gap: 1px;
+            overflow-x: auto;
+            scrollbar-width: none;
+            flex: 1;
+            min-width: 0;
+        }
+
+        .navtabs::-webkit-scrollbar {
+            display: none;
+        }
+
+        .navtab {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 7px 13px;
+            border-radius: 8px;
+            font-family: var(--sans);
+            font-size: 13px;
+            font-weight: 500;
+            color: rgba(255, 255, 255, 0.38);
+            cursor: pointer;
+            white-space: nowrap;
+            border: none;
+            background: transparent;
+            transition: color 0.14s, background 0.14s;
+            position: relative;
+        }
+
+        .navtab:hover {
+            color: rgba(255, 255, 255, .72);
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .navtab.active {
+            color: #fff;
+            background: rgba(124, 124, 255, 0.13);
+        }
+
+        .navtab.active::after {
+            content: '';
+            position: absolute;
+            bottom: -1px;
+            left: 14px;
+            right: 14px;
+            height: 2px;
+            background: linear-gradient(90deg, var(--accent), var(--cyan));
+            border-radius: 2px 2px 0 0;
+        }
+
+        .navtab .mdi {
+            font-size: 15px;
+        }
+
+        /* ─── PAGE ──────────────────────────────────────────── */
+        #page {
+            max-width: 1160px;
+            margin: 0 auto;
+            padding: 76px 24px 60px;
+            font-family: var(--sans);
+        }
+
+        /* ─── TOOL HEADER BANNER ─────────────────────────────── */
+        .tool-hdr {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            margin-bottom: 24px;
+            padding: 22px 24px;
+            border-radius: var(--radius);
+            background: linear-gradient(120deg, var(--hdr-color, #4527a0) 0%, transparent 65%);
+            border: 1px solid var(--border2);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .tool-hdr::after {
+            content: '';
+            position: absolute;
+            right: -40px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 160px;
+            height: 160px;
+            border-radius: 50%;
+            background: var(--hdr-color, #4527a0);
+            opacity: 0.12;
+            filter: blur(40px);
+            pointer-events: none;
+        }
+
+        .tool-hdr-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 13px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+        }
+
+        .tool-hdr-icon .mdi {
+            font-size: 22px;
+            color: #fff;
+        }
+
+        .tool-hdr-title {
+            font-size: 20px;
+            font-weight: 800;
+            color: #fff;
+            line-height: 1.1;
+            letter-spacing: -.02em;
+        }
+
+        .tool-hdr-sub {
+            font-size: 13px;
+            color: rgba(255, 255, 255, .5);
+            margin-top: 4px;
+            font-weight: 400;
+        }
+
+        /* ─── PANELS ─────────────────────────────────────────── */
+        .panel {
+            background: var(--card2);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 18px 20px;
+        }
+
+        .panel-title {
+            font-family: var(--sans);
+            font-size: 10px;
+            font-weight: 700;
+            letter-spacing: .1em;
+            text-transform: uppercase;
+            color: rgba(255, 255, 255, .3);
+            margin-bottom: 10px;
+            line-height: 1;
+        }
+
+        .d-flex .panel-title,
+        [style*="display:flex"] .panel-title {
+            margin-bottom: 0;
+        }
+
+        /* ─── CODE PANELS (terminal style) ───────────────────── */
+        .code-wrap {
+            border-radius: 10px;
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.07);
+            margin-bottom: 14px;
+        }
+
+        .code-wrap:last-child {
+            margin-bottom: 0;
+        }
+
+        .code-bar {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 7px 12px;
+            background: #0a0d14;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+        }
+
+        .code-bar .dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+        }
+
+        .dot-r {
+            background: #ff5f57;
+        }
+
+        .dot-y {
+            background: #febc2e;
+        }
+
+        .dot-g {
+            background: #28c840;
+        }
+
+        .code-bar-label {
+            font-size: 11px;
+            color: rgba(255, 255, 255, .28);
+            margin-left: 4px;
+            font-family: var(--mono);
+            letter-spacing: .04em;
+        }
+
+        .code-bar .copy-btn {
+            margin-left: auto;
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: rgba(255, 255, 255, .3);
+            font-size: 12px;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            padding: 2px 6px;
+            border-radius: 4px;
+            transition: color .12s, background .12s;
+            font-family: var(--sans);
+        }
+
+        .code-bar .copy-btn:hover {
+            color: rgba(255, 255, 255, .75);
+            background: rgba(255, 255, 255, .08);
+        }
+
+        .code-box {
+            font-family: var(--mono);
+            font-size: 12.5px;
+            background: #060810;
+            color: #adbac7;
+            padding: 14px 16px;
+            white-space: pre-wrap;
+            word-break: break-all;
+            line-height: 1.7;
+            overflow: auto;
+            margin: 0;
+        }
+
+        /* ─── RENDER PANELS (browser chrome style) ────────────── */
+        .render-wrap {
+            border-radius: 10px;
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.07);
+            margin-bottom: 14px;
+        }
+
+        .render-wrap:last-child {
+            margin-bottom: 0;
+        }
+
+        .render-bar {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 7px 12px;
+            background: #0e1018;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .render-bar .dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+        }
+
+        .render-bar-label {
+            font-size: 11px;
+            color: rgba(255, 255, 255, .25);
+            margin-left: 4px;
+            font-family: var(--sans);
+        }
+
+        .render-box {
+            background: #fff;
+            color: #111;
+            padding: 16px;
+            min-height: 52px;
+            font-size: 14px;
+            font-family: system-ui, sans-serif;
+        }
+
+        .copy-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 8px;
+        }
+
+        /* ─── ISSUE ITEMS ─────────────────────────────────────── */
+        .issue-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            background: rgba(255, 255, 255, 0.025);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            border-left-width: 3px;
+            padding: 11px 14px;
+            font-size: 12.5px;
+            line-height: 1.5;
+            transition: background .12s;
+        }
+
+        .issue-item:hover {
+            background: rgba(255, 255, 255, 0.04);
+        }
+
+        .issue-item.lvl-error {
+            border-left-color: #ef5350;
+        }
+
+        .issue-item.lvl-warning {
+            border-left-color: #ffa726;
+        }
+
+        .issue-item.lvl-info {
+            border-left-color: #29b6f6;
+        }
+
+        .badge {
+            font-size: 9.5px;
+            font-weight: 700;
+            letter-spacing: .07em;
+            padding: 3px 8px;
+            border-radius: 4px;
+            white-space: nowrap;
+            flex-shrink: 0;
+            margin-top: 1px;
+            font-family: var(--sans);
+        }
+
+        .badge-error {
+            background: rgba(239, 83, 80, .18);
+            color: #ef9a9a;
+        }
+
+        .badge-warning {
+            background: rgba(255, 167, 38, .15);
+            color: #ffe082;
+        }
+
+        .badge-info {
+            background: rgba(41, 182, 246, .12);
+            color: #81d4fa;
+        }
+
+        .issue-text {
+            color: rgba(255, 255, 255, .68);
+            font-family: var(--sans);
+        }
+
+        .issue-elem {
+            font-family: var(--mono);
+            color: var(--accent);
+            margin-right: 6px;
+            font-size: 12px;
+        }
+
+        .issue-fix {
+            color: rgba(74, 222, 128, .7);
+            font-size: 11.5px;
+            margin-top: 3px;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        /* ─── SUMMARY CHIPS ───────────────────────────────────── */
+        .summary-chip {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 11.5px;
+            font-weight: 600;
+            padding: 3px 10px;
+            border-radius: 20px;
+            font-family: var(--sans);
+        }
+
+        .chip-error {
+            background: rgba(239, 83, 80, .14);
+            color: #ef9a9a;
+            border: 1px solid rgba(239, 83, 80, .25);
+        }
+
+        .chip-warning {
+            background: rgba(255, 167, 38, .12);
+            color: #ffe082;
+            border: 1px solid rgba(255, 167, 38, .22);
+        }
+
+        .chip-info {
+            background: rgba(41, 182, 246, .1);
+            color: #81d4fa;
+            border: 1px solid rgba(41, 182, 246, .2);
+        }
+
+        .chip-clean {
+            background: rgba(74, 222, 128, .1);
+            color: #86efac;
+            border: 1px solid rgba(74, 222, 128, .2);
+        }
+
+        /* ─── HOME CARDS ──────────────────────────────────────── */
+        .home-hero {
+            margin-bottom: 36px;
+        }
+
+        .home-hero h1 {
+            font-family: var(--sans);
+            font-size: 38px;
+            font-weight: 900;
+            color: #fff;
+            line-height: 1.1;
+            letter-spacing: -.03em;
+            margin: 0 0 10px;
+        }
+
+        .home-hero h1 span {
+            background: linear-gradient(135deg, var(--accent), var(--cyan));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .home-hero p {
+            font-size: 16px;
+            color: rgba(255, 255, 255, .4);
+            max-width: 500px;
+            line-height: 1.6;
+            margin: 0;
+            font-weight: 400;
+        }
+
+        .home-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+        }
+
+        @media (max-width: 900px) {
+            .home-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 580px) {
+            .home-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .hcard {
+            background: var(--card2);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            overflow: hidden;
+            cursor: pointer;
+            transition: transform .16s ease, border-color .16s, box-shadow .16s;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .hcard:hover {
+            transform: translateY(-4px);
+            border-color: rgba(124, 124, 255, .28);
+            box-shadow: 0 16px 48px rgba(0, 0, 0, .5), 0 0 0 1px rgba(124, 124, 255, .1);
+        }
+
+        .hcard-stripe {
+            height: 3px;
+            background: var(--card-accent, var(--accent));
+        }
+
+        .hcard-body {
+            padding: 18px 20px 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            flex: 1;
+        }
+
+        .hcard-top {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .hcard-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .hcard-icon .mdi {
+            font-size: 19px;
+            color: #fff;
+        }
+
+        .hcard-name {
+            font-size: 14px;
+            font-weight: 700;
+            color: #fff;
+            letter-spacing: -.01em;
+            font-family: var(--sans);
+        }
+
+        .hcard-desc {
+            font-size: 12.5px;
+            color: rgba(255, 255, 255, .38);
+            line-height: 1.55;
+            font-family: var(--sans);
+            flex: 1;
+        }
+
+        .hcard-go {
+            font-size: 12px;
+            font-weight: 600;
+            color: rgba(255, 255, 255, .18);
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            transition: color .14s, gap .14s;
+            font-family: var(--sans);
+        }
+
+        .hcard:hover .hcard-go {
+            color: var(--accent);
+            gap: 8px;
+        }
+
+        /* ─── CREATOR SECTION ────────────────────────────────── */
+        .creator-section {
+            margin-top: 52px;
+            padding-top: 32px;
+            border-top: 1px solid var(--border2);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 24px;
+        }
+
+        .creator-byline {
+            font-size: 11px;
+            font-weight: 600;
+            letter-spacing: .1em;
+            text-transform: uppercase;
+            color: rgba(255, 255, 255, .25);
+            font-family: var(--sans);
+            margin-bottom: 14px;
+        }
+
+        .creator-identity {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .creator-avatar {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--accent), var(--cyan));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            font-size: 15px;
+            font-weight: 800;
+            color: #fff;
+            font-family: var(--sans);
+            letter-spacing: -.01em;
+            box-shadow: 0 0 0 3px rgba(124, 124, 255, .2);
+        }
+
+        .creator-name {
+            font-size: 17px;
+            font-weight: 800;
+            color: #fff;
+            font-family: var(--sans);
+            letter-spacing: -.02em;
+            line-height: 1.2;
+        }
+
+        .creator-role {
+            font-size: 12px;
+            color: rgba(255, 255, 255, .38);
+            font-family: var(--sans);
+            margin-top: 2px;
+        }
+
+        .creator-links {
+            display: flex;
+            gap: 8px;
+            flex-shrink: 0;
+        }
+
+        .creator-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-size: 12px;
+            font-weight: 600;
+            font-family: var(--sans);
+            text-decoration: none;
+            border: 1px solid var(--border2);
+            color: rgba(255, 255, 255, .65);
+            background: var(--card);
+            transition: background .14s, color .14s, border-color .14s, transform .14s;
+        }
+
+        .creator-link:hover {
+            background: rgba(124, 124, 255, .14);
+            border-color: var(--accent);
+            color: #fff;
+            transform: translateY(-1px);
+        }
+
+        .creator-link .mdi {
+            font-size: 15px;
+        }
+
+        /* ─── CONTRAST ────────────────────────────────────────── */
+        .wcag-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-top: 14px;
+        }
+
+        .wcard {
+            border-radius: 10px;
+            padding: 13px 15px;
+        }
+
+        .wcard .wlbl {
+            font-size: 10px;
+            font-weight: 700;
+            letter-spacing: .08em;
+            text-transform: uppercase;
+            opacity: .65;
+            font-family: var(--sans);
+        }
+
+        .wcard .wres {
+            font-size: 20px;
+            font-weight: 800;
+            margin: 3px 0;
+            font-family: var(--sans);
+            letter-spacing: -.02em;
+        }
+
+        .wcard .wreq {
+            font-size: 11px;
+            opacity: .5;
+            font-family: var(--sans);
+        }
+
+        .wpass {
+            background: rgba(74, 222, 128, .12);
+            border: 1px solid rgba(74, 222, 128, .25);
+            color: #86efac;
+        }
+
+        .wfail {
+            background: rgba(239, 83, 80, .1);
+            border: 1px solid rgba(239, 83, 80, .22);
+            color: #fca5a5;
+        }
+
+        /* ─── EMPTY STATE ─────────────────────────────────────── */
+        .empty {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 160px;
+            color: rgba(255, 255, 255, .18);
+            font-size: 13.5px;
+            gap: 8px;
+            font-family: var(--sans);
+        }
+
+        .empty .mdi {
+            font-size: 32px;
+            opacity: .35;
+        }
+
+        /* ─── SECTION DIVIDER LABEL ───────────────────────────── */
+        .section-sep {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin: 20px 0 16px;
+        }
+
+        .section-sep-line {
+            flex: 1;
+            height: 1px;
+            background: var(--border);
+        }
+
+        .section-sep-txt {
+            font-size: 10px;
+            font-weight: 700;
+            letter-spacing: .1em;
+            text-transform: uppercase;
+            color: rgba(255, 255, 255, .22);
+            font-family: var(--sans);
+        }
+
+        /* ─── VUETIFY TWEAKS ──────────────────────────────────── */
+        .v-field--variant-outlined .v-field__outline {
+            --v-field-border-opacity: .2;
+        }
+
+        .v-textarea textarea,
+        .v-text-field input,
+        .v-field__input {
+            font-family: var(--mono) !important;
+            font-size: 13px !important;
+        }
+
+        .v-select .v-field__input,
+        .v-text-field.sans .v-field__input {
+            font-family: var(--sans) !important;
+        }
+
+        .v-label {
+            font-family: var(--sans) !important;
+            font-size: 13px !important;
+        }
+
+        .v-btn {
+            font-family: var(--sans) !important;
+            letter-spacing: .01em !important;
+        }
+
+        /* ─── SCROLLBAR ───────────────────────────────────────── */
+        ::-webkit-scrollbar {
+            width: 5px;
+            height: 5px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, .12);
+            border-radius: 3px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(255, 255, 255, .22);
+        }
+
+        /* ─── FADE TRANSITION ─────────────────────────────────── */
+        .fade-enter-active,
+        .fade-leave-active {
+            transition: opacity .18s ease, transform .18s ease;
+        }
+
+        .fade-enter-from {
+            opacity: 0;
+            transform: translateY(6px);
+        }
+
+        .fade-leave-to {
+            opacity: 0;
+            transform: translateY(-4px);
+        }
+    </style>
+</head>
+
+<body>
+    <div id="app">
+        <v-app theme="dark" style="background:var(--bg);">
+
+            <!-- ── TOP NAV ──────────────────────────────────── -->
+            <div id="topbar">
+                <div class="logo">a11y <span>GUI</span></div>
+                <nav class="navtabs">
+                    <button class="navtab" :class="{active:view==='home'}" @click="navigate('home')">
+                        <i class="mdi mdi-home-outline"></i> Home
+                    </button>
+                    <button v-for="t in tools" :key="t.id" class="navtab" :class="{active:view===t.id}"
+                        @click="navigate(t.id)">
+                        <i :class="'mdi '+t.icon"></i> {{t.name}}
+                    </button>
+                </nav>
+                <div style="margin-left:auto;display:flex;align-items:center;gap:10px;padding-right:4px;flex-shrink:0;">
+                    <a href="https://hits.sh/paulrossdev.github.io/" target="_blank" rel="noopener" title="Page views"
+                        style="display:flex;align-items:center;opacity:.7;transition:opacity .15s;"
+                        onmouseover="this.style.opacity=1" onmouseout="this.style.opacity=.7">
+                        <img src="https://hits.sh/paulrossdev.github.io.svg?style=flat-square&color=7b8cff&labelColor=1a1a30"
+                            alt="Page view counter" style="height:20px;border-radius:4px;" />
+                    </a>
+                </div>
+            </div>
+
+            <v-main style="padding-top:0">
+                <div id="page">
+
+                    <!-- ════════════════════════════════════════════ -->
+                    <!-- HOME                                         -->
+                    <!-- ════════════════════════════════════════════ -->
+                    <div v-if="view==='home'">
+                        <div class="home-hero">
+                            <h1>Write accessible HTML.<br><span>Faster.</span></h1>
+                            <p>Paste any snippet and instantly see every WCAG issue, what gets fixed, and how it renders
+                                — before and after.</p>
+                        </div>
+                        <div class="home-grid">
+                            <div v-for="t in tools" :key="t.id" class="hcard" @click="navigate(t.id)">
+                                <div class="hcard-stripe" :style="{background:t.color}"></div>
+                                <div class="hcard-body">
+                                    <div class="hcard-top">
+                                        <div class="hcard-icon" :style="{background:t.color+'33'}">
+                                            <i :class="'mdi '+t.icon" :style="{color:t.color}"></i>
+                                        </div>
+                                        <div>
+                                            <div class="hcard-name">{{t.name}}</div>
+                                            <v-chip v-if="t.beta" size="x-small" color="orange" label
+                                                style="margin-top:4px;font-size:9px;">beta</v-chip>
+                                        </div>
+                                    </div>
+                                    <div class="hcard-desc">{{t.desc}}</div>
+                                    <div class="hcard-go">Open tool <i class="mdi mdi-arrow-right"></i></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="creator-section">
+                            <div>
+                                <div class="creator-byline">Built by</div>
+                                <div class="creator-identity">
+                                    <div class="creator-avatar">PR</div>
+                                    <div>
+                                        <div class="creator-name">Paul Ross</div>
+                                        <div class="creator-role">Web Developer · Teleflex</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="creator-links">
+                                <a class="creator-link" href="https://paulrossdev.com/" target="_blank" rel="noopener">
+                                    <i class="mdi mdi-web"></i> Portfolio
+                                </a>
+                                <a class="creator-link" href="https://www.linkedin.com/in/paul-ross-ny-nc/"
+                                    target="_blank" rel="noopener">
+                                    <i class="mdi mdi-linkedin"></i> LinkedIn
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- ════════════════════════════════════════════ -->
+                    <!-- ACCESSIBILITY SCANNER                        -->
+                    <!-- ════════════════════════════════════════════ -->
+                    <div v-if="view==='scanner'">
+                        <div class="tool-hdr" style="--hdr-color:#4527a0;">
+                            <div class="tool-hdr-icon" style="background:#4527a0;">
+                                <i class="mdi mdi-magnify-scan"></i>
+                            </div>
+                            <div>
+                                <div class="tool-hdr-title">Accessibility Scanner</div>
+                                <div class="tool-hdr-sub">Paste any HTML. Detect WCAG issues. Get auto-fixed accessible
+                                    code.</div>
+                            </div>
+                        </div>
+
+                        <!-- Input row -->
+                        <v-row class="mb-4">
+                            <v-col cols="12">
+                                <div class="panel">
+                                    <!-- Buttons above textarea so they're always visible -->
+                                    <div class="d-flex align-center gap-2 mb-3" style="flex-wrap:wrap;">
+                                        <div class="panel-title" style="margin:0;flex:1;">Paste your HTML</div>
+                                        <v-btn color="#7b8cff" rounded="lg" size="small" style="font-weight:700;"
+                                            @click="runScanner">
+                                            <v-icon start size="15">mdi-magnify-scan</v-icon> Scan &amp; Fix
+                                        </v-btn>
+                                        <v-btn variant="tonal" rounded="lg" size="small" @click="loadExample">
+                                            <v-icon start size="15">mdi-code-tags</v-icon> Load Example
+                                        </v-btn>
+                                        <v-btn variant="text" rounded="lg" size="small" @click="resetScanner">
+                                            <v-icon start size="15">mdi-refresh</v-icon> Reset
+                                        </v-btn>
+                                    </div>
+                                    <v-textarea v-model="scanner.input" variant="outlined" rows="8" no-resize
+                                        hide-details autocomplete="off" spellcheck="false"
+                                        style="font-family:var(--mono);font-size:13px;"
+                                        placeholder="Paste your HTML here…" />
+                                </div>
+                            </v-col>
+                        </v-row>
+
+                        <!-- Results -->
+                        <div v-if="scanner.ran">
+
+                            <!-- ① Issues — full width -->
+                            <div class="panel mb-4">
+                                <div
+                                    style="display:flex;align-items:center;gap:12px;margin-bottom:12px;flex-wrap:wrap;">
+                                    <div class="panel-title" style="margin:0;">Issues Detected</div>
+                                    <div style="display:flex;gap:8px;flex-wrap:wrap;">
+                                        <template v-if="scanner.issues.length===0">
+                                            <div class="summary-chip chip-clean"><i class="mdi mdi-check-circle"
+                                                    style="font-size:13px;"></i> No issues found</div>
+                                        </template>
+                                        <template v-else>
+                                            <div v-if="counts.error" class="summary-chip chip-error"> <i
+                                                    class="mdi mdi-close-circle" style="font-size:12px;"></i>
+                                                {{counts.error}} error{{counts.error>1?'s':''}}</div>
+                                            <div v-if="counts.warning" class="summary-chip chip-warning"><i
+                                                    class="mdi mdi-alert" style="font-size:12px;"></i>
+                                                {{counts.warning}} warning{{counts.warning>1?'s':''}}</div>
+                                            <div v-if="counts.info" class="summary-chip chip-info"> <i
+                                                    class="mdi mdi-information" style="font-size:12px;"></i>
+                                                {{counts.info}} suggestion{{counts.info>1?'s':''}}</div>
+                                        </template>
+                                    </div>
+                                </div>
+                                <div v-if="scanner.issues.length===0" class="empty" style="min-height:80px;"><i
+                                        class="mdi mdi-check-circle"></i> Your HTML passes all checks.</div>
+                                <div v-else
+                                    style="display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:8px;">
+                                    <div v-for="(iss,i) in scanner.issues" :key="i" class="issue-item"
+                                        :class="'lvl-'+iss.level">
+                                        <span class="badge"
+                                            :class="'badge-'+iss.level">{{iss.level.toUpperCase()}}</span>
+                                        <div>
+                                            <div><code class="issue-elem">&lt;{{iss.el}}&gt;</code><span
+                                                    class="issue-text">{{iss.msg}}</span></div>
+                                            <div v-if="iss.fix" class="issue-fix"><i class="mdi mdi-auto-fix"></i>
+                                                {{iss.fix}}</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- ② Side-by-side: Original | Fixed -->
+                            <v-row>
+                                <v-col cols="12" md="6">
+                                    <div class="panel">
+                                        <div class="panel-title">Original HTML</div>
+                                        <div class="code-wrap">
+                                            <div class="code-bar"><span class="dot dot-r"></span><span
+                                                    class="dot dot-y"></span><span class="dot dot-g"></span><span
+                                                    class="code-bar-label">HTML</span></div>
+                                            <div class="code-box mb-3" style="max-height:220px;overflow:auto;">
+                                                {{scanner.input}}</div>
+                                        </div>
+                                        <div class="panel-title">Original Render</div>
+                                        <div class="render-wrap">
+                                            <div class="render-bar"><span class="dot dot-r"></span><span
+                                                    class="dot dot-y"></span><span class="dot dot-g"></span><span
+                                                    class="render-bar-label">Preview</span></div>
+                                            <div class="render-box" v-html="scanner.input"></div>
+                                        </div>
+                                    </div>
+                                </v-col>
+                                <v-col cols="12" md="6">
+                                    <div class="panel">
+                                        <div
+                                            style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">
+                                            <div class="panel-title" style="margin:0;">Fixed HTML</div>
+                                            <v-btn size="x-small" variant="tonal" color="#7b8cff" rounded
+                                                @click="copy(scanner.fixed)">
+                                                <v-icon start size="13">mdi-content-copy</v-icon> Copy
+                                            </v-btn>
+                                        </div>
+                                        <div class="code-wrap">
+                                            <div class="code-bar"><span class="dot dot-r"></span><span
+                                                    class="dot dot-y"></span><span class="dot dot-g"></span><span
+                                                    class="code-bar-label">HTML</span></div>
+                                            <div class="code-box mb-3" style="max-height:220px;overflow:auto;">
+                                                {{scanner.fixed}}</div>
+                                        </div>
+                                        <div class="panel-title">Fixed Render <span
+                                                style="font-size:10px;opacity:.4;text-transform:none;letter-spacing:0;font-weight:400;">(visually
+                                                identical, more accessible)</span></div>
+                                        <div class="render-wrap">
+                                            <div class="render-bar"><span class="dot dot-r"></span><span
+                                                    class="dot dot-y"></span><span class="dot dot-g"></span><span
+                                                    class="render-bar-label">Preview</span></div>
+                                            <div class="render-box" v-html="scanner.fixed"></div>
+                                        </div>
+                                    </div>
+                                </v-col>
+                            </v-row>
+                        </div>
+
+                        <div v-else class="empty" style="margin-top:32px;">
+                            <i class="mdi mdi-code-tags"></i> Paste HTML above and click <strong
+                                style="color:var(--accent);margin:0 4px;">Scan &amp; Fix</strong> to begin.
+                        </div>
+                    </div>
+
+                    <!-- ════════════════════════════════════════════ -->
+                    <!-- COLOR CONTRAST                               -->
+                    <!-- ════════════════════════════════════════════ -->
+                    <div v-if="view==='contrast'">
+                        <div class="tool-hdr" style="--hdr-color:#1a237e;">
+                            <div class="tool-hdr-icon" style="background:#1a237e;">
+                                <i class="mdi mdi-contrast-circle"></i>
+                            </div>
+                            <div>
+                                <div class="tool-hdr-title">Color Contrast Checker</div>
+                                <div class="tool-hdr-sub">Check foreground/background combinations against WCAG 2.1 AA
+                                    &amp; AAA.</div>
+                            </div>
+                        </div>
+                        <v-row>
+                            <v-col cols="12" md="4">
+                                <div class="panel">
+                                    <div class="panel-title">Colors</div>
+                                    <v-text-field v-model="cc.fg" label="Foreground (text color)" variant="outlined"
+                                        hide-details class="mb-4" placeholder="#000000">
+                                        <template #append-inner>
+                                            <input type="color" :value="cc.fg"
+                                                @input="cc.fg=$event.target.value;cc.ratio=null"
+                                                style="width:26px;height:26px;border:none;padding:0;cursor:pointer;background:none;border-radius:4px;" />
+                                        </template>
+                                    </v-text-field>
+                                    <v-text-field v-model="cc.bg" label="Background color" variant="outlined"
+                                        hide-details class="mb-5" placeholder="#ffffff">
+                                        <template #append-inner>
+                                            <input type="color" :value="cc.bg"
+                                                @input="cc.bg=$event.target.value;cc.ratio=null"
+                                                style="width:26px;height:26px;border:none;padding:0;cursor:pointer;background:none;border-radius:4px;" />
+                                        </template>
+                                    </v-text-field>
+                                    <v-btn color="#7b8cff" rounded="lg" block style="font-weight:700;"
+                                        @click="doContrast">Check Contrast</v-btn>
+                                </div>
+                            </v-col>
+                            <v-col cols="12" md="8">
+                                <div class="panel">
+                                    <template v-if="cc.ratio !== null">
+                                        <div
+                                            :style="`background:${cc.bg};color:${cc.fg};border-radius:8px;padding:20px 18px;margin-bottom:14px;`">
+                                            <div style="font-size:19px;font-weight:700;margin-bottom:4px;">Sample
+                                                Heading Text</div>
+                                            <div style="font-size:14px;">This is what body text looks like with this
+                                                color combination.</div>
+                                            <div style="font-size:12px;margin-top:6px;opacity:.7;">Small text (12px) —
+                                                hardest to read.</div>
+                                        </div>
+                                        <div class="d-flex align-center gap-4 mb-3">
+                                            <div
+                                                :style="`width:60px;height:60px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;background:${cc.ratio>=4.5?'rgba(76,175,80,.18)':cc.ratio>=3?'rgba(255,193,7,.18)':'rgba(244,67,54,.15)'};border:2px solid ${cc.ratio>=4.5?'#66bb6a':cc.ratio>=3?'#ffa726':'#ef5350'};`">
+                                                <span
+                                                    style="font-size:11px;font-weight:800;text-align:center;line-height:1.2;">{{cc.ratio.toFixed(2)}}<br>:1</span>
+                                            </div>
+                                            <div>
+                                                <div style="font-size:15px;font-weight:700;">Contrast Ratio</div>
+                                                <div style="font-size:12px;opacity:.45;">WCAG 2.1 max is 21:1</div>
+                                            </div>
+                                        </div>
+                                        <div class="wcag-grid">
+                                            <div class="wcard" :class="cc.ratio>=4.5?'wpass':'wfail'">
+                                                <div class="wlbl">AA · Normal Text</div>
+                                                <div class="wres">{{cc.ratio>=4.5?'PASS ✓':'FAIL ✗'}}</div>
+                                                <div class="wreq">Requires 4.5:1</div>
+                                            </div>
+                                            <div class="wcard" :class="cc.ratio>=3?'wpass':'wfail'">
+                                                <div class="wlbl">AA · Large Text</div>
+                                                <div class="wres">{{cc.ratio>=3?'PASS ✓':'FAIL ✗'}}</div>
+                                                <div class="wreq">Requires 3:1</div>
+                                            </div>
+                                            <div class="wcard" :class="cc.ratio>=7?'wpass':'wfail'">
+                                                <div class="wlbl">AAA · Normal Text</div>
+                                                <div class="wres">{{cc.ratio>=7?'PASS ✓':'FAIL ✗'}}</div>
+                                                <div class="wreq">Requires 7:1</div>
+                                            </div>
+                                            <div class="wcard" :class="cc.ratio>=4.5?'wpass':'wfail'">
+                                                <div class="wlbl">AAA · Large Text</div>
+                                                <div class="wres">{{cc.ratio>=4.5?'PASS ✓':'FAIL ✗'}}</div>
+                                                <div class="wreq">Requires 4.5:1</div>
+                                            </div>
+                                        </div>
+                                    </template>
+                                    <div v-else class="empty"><i class="mdi mdi-palette-outline"></i> Results will
+                                        appear after checking contrast.</div>
+                                </div>
+                            </v-col>
+                        </v-row>
+                    </div>
+
+                    <!-- ════════════════════════════════════════════ -->
+                    <!-- FORM FIXER                                   -->
+                    <!-- ════════════════════════════════════════════ -->
+                    <div v-if="view==='forms'">
+                        <div class="tool-hdr" style="--hdr-color:#00695c;">
+                            <div class="tool-hdr-icon" style="background:#00695c;">
+                                <i class="mdi mdi-form-select"></i>
+                            </div>
+                            <div>
+                                <div class="tool-hdr-title">Form Fixer</div>
+                                <div class="tool-hdr-sub">Automatically add labels, aria attributes, and roles to your
+                                    form HTML.</div>
+                            </div>
+                        </div>
+                        <!-- Input -->
+                        <div class="panel mb-4">
+                            <div class="d-flex align-center gap-2 mb-3" style="flex-wrap:wrap;">
+                                <div class="panel-title" style="margin:0;flex:1;">Paste your form HTML</div>
+                                <v-btn color="teal-lighten-1" rounded="lg" size="small" @click="runFormFixer">
+                                    <v-icon start size="15">mdi-auto-fix</v-icon> Fix Form
+                                </v-btn>
+                                <v-btn variant="tonal" rounded="lg" size="small" @click="loadFormExample">
+                                    <v-icon start size="15">mdi-code-tags</v-icon> Load Example
+                                </v-btn>
+                                <v-btn variant="text" rounded="lg" size="small"
+                                    @click="forms.origHtml='';forms.newHtml='';forms.issues=[]">
+                                    <v-icon start size="15">mdi-refresh</v-icon> Reset
+                                </v-btn>
+                            </div>
+                            <v-textarea v-model="forms.input" variant="outlined" rows="7" no-resize hide-details
+                                autocomplete="off" spellcheck="false" style="font-family:var(--mono);font-size:13px;" />
+                        </div>
+
+                        <!-- Results -->
+                        <div v-if="forms.origHtml">
+                            <!-- Issues full width -->
+                            <div class="panel mb-4">
+                                <div
+                                    style="display:flex;align-items:center;gap:12px;margin-bottom:12px;flex-wrap:wrap;">
+                                    <div class="panel-title" style="margin:0;">Issues Fixed</div>
+                                    <div style="display:flex;gap:8px;flex-wrap:wrap;">
+                                        <div v-if="forms.issues.length===0" class="summary-chip chip-clean"><i
+                                                class="mdi mdi-check-circle" style="font-size:13px;"></i> No issues
+                                            found</div>
+                                        <template v-else>
+                                            <div v-if="forms.issues.filter(i=>i.level==='error').length"
+                                                class="summary-chip chip-error"> <i class="mdi mdi-close-circle"
+                                                    style="font-size:12px;"></i>
+                                                {{forms.issues.filter(i=>i.level==='error').length}}
+                                                error{{forms.issues.filter(i=>i.level==='error').length>1?'s':''}}</div>
+                                            <div v-if="forms.issues.filter(i=>i.level==='warning').length"
+                                                class="summary-chip chip-warning"><i class="mdi mdi-alert"
+                                                    style="font-size:12px;"></i>
+                                                {{forms.issues.filter(i=>i.level==='warning').length}}
+                                                warning{{forms.issues.filter(i=>i.level==='warning').length>1?'s':''}}
+                                            </div>
+                                            <div v-if="forms.issues.filter(i=>i.level==='info').length"
+                                                class="summary-chip chip-info"> <i class="mdi mdi-information"
+                                                    style="font-size:12px;"></i>
+                                                {{forms.issues.filter(i=>i.level==='info').length}}
+                                                suggestion{{forms.issues.filter(i=>i.level==='info').length>1?'s':''}}
+                                            </div>
+                                        </template>
+                                    </div>
+                                </div>
+                                <div v-if="forms.issues.length===0" class="empty" style="min-height:80px;"><i
+                                        class="mdi mdi-check-circle"></i> Your form HTML passes all checks.</div>
+                                <div v-else
+                                    style="display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:8px;">
+                                    <div v-for="(iss,i) in forms.issues" :key="i" class="issue-item"
+                                        :class="'lvl-'+iss.level">
+                                        <span class="badge"
+                                            :class="'badge-'+iss.level">{{iss.level.toUpperCase()}}</span>
+                                        <div>
+                                            <div><code class="issue-elem">&lt;{{iss.el}}&gt;</code><span
+                                                    class="issue-text">{{iss.msg}}</span></div>
+                                            <div v-if="iss.fix" class="issue-fix"><i class="mdi mdi-auto-fix"></i>
+                                                {{iss.fix}}</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Side-by-side: Original | Fixed -->
+                            <v-row>
+                                <v-col cols="12" md="6">
+                                    <div class="panel">
+                                        <div class="panel-title">Original HTML</div>
+                                        <div class="code-wrap">
+                                            <div class="code-bar"><span class="dot dot-r"></span><span
+                                                    class="dot dot-y"></span><span class="dot dot-g"></span><span
+                                                    class="code-bar-label">HTML</span></div>
+                                            <div class="code-box mb-3" style="max-height:220px;overflow:auto;">
+                                                {{forms.origHtml}}</div>
+                                        </div>
+                                        <div class="panel-title">Original Render</div>
+                                        <div class="render-wrap">
+                                            <div class="render-bar"><span class="dot dot-r"></span><span
+                                                    class="dot dot-y"></span><span class="dot dot-g"></span><span
+                                                    class="render-bar-label">Preview</span></div>
+                                            <div class="render-box" v-html="forms.origHtml"></div>
+                                        </div>
+                                    </div>
+                                </v-col>
+                                <v-col cols="12" md="6">
+                                    <div class="panel">
+                                        <div
+                                            style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">
+                                            <div class="panel-title" style="margin:0;">Fixed HTML</div>
+                                            <v-btn size="x-small" variant="tonal" color="teal-lighten-1" rounded
+                                                @click="copy(forms.newHtml)">
+                                                <v-icon start size="13">mdi-content-copy</v-icon> Copy
+                                            </v-btn>
+                                        </div>
+                                        <div class="code-wrap">
+                                            <div class="code-bar"><span class="dot dot-r"></span><span
+                                                    class="dot dot-y"></span><span class="dot dot-g"></span><span
+                                                    class="code-bar-label">HTML</span></div>
+                                            <div class="code-box mb-3" style="max-height:220px;overflow:auto;">
+                                                {{forms.newHtml}}</div>
+                                        </div>
+                                        <div class="panel-title">Fixed Render</div>
+                                        <div class="render-wrap">
+                                            <div class="render-bar"><span class="dot dot-r"></span><span
+                                                    class="dot dot-y"></span><span class="dot dot-g"></span><span
+                                                    class="render-bar-label">Preview</span></div>
+                                            <div class="render-box" v-html="forms.newHtml"></div>
+                                        </div>
+                                    </div>
+                                </v-col>
+                            </v-row>
+                        </div>
+                        <div v-else class="empty" style="margin-top:32px;"><i class="mdi mdi-form-select"></i> Paste
+                            form HTML above and click <strong style="color:#4db6ac;margin:0 4px;">Fix Form</strong> to
+                            begin.</div>
+                    </div>
+
+                    <!-- ════════════════════════════════════════════ -->
+                    <!-- TABLE FIXER                                  -->
+                    <!-- ════════════════════════════════════════════ -->
+                    <div v-if="view==='tables'">
+                        <div class="tool-hdr" style="--hdr-color:#e65100;">
+                            <div class="tool-hdr-icon" style="background:#e65100;">
+                                <i class="mdi mdi-table-edit"></i>
+                            </div>
+                            <div>
+                                <div class="tool-hdr-title">Table Accessibility Fixer</div>
+                                <div class="tool-hdr-sub">Add scope, caption, role, and aria attributes to data tables.
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Input -->
+                        <div class="panel mb-4">
+                            <div class="d-flex align-center gap-2 mb-3" style="flex-wrap:wrap;">
+                                <div class="panel-title" style="margin:0;flex:1;">Paste your table HTML</div>
+                                <v-btn color="orange-lighten-1" rounded="lg" size="small" @click="runTableFixer">
+                                    <v-icon start size="15">mdi-auto-fix</v-icon> Fix Table
+                                </v-btn>
+                                <v-btn variant="tonal" rounded="lg" size="small" @click="loadTableExample">
+                                    <v-icon start size="15">mdi-code-tags</v-icon> Load Example
+                                </v-btn>
+                                <v-btn variant="text" rounded="lg" size="small"
+                                    @click="tables.origHtml='';tables.newHtml='';tables.issues=[]">
+                                    <v-icon start size="15">mdi-refresh</v-icon> Reset
+                                </v-btn>
+                            </div>
+                            <v-textarea v-model="tables.input" variant="outlined" rows="6" no-resize hide-details
+                                autocomplete="off" spellcheck="false" style="font-family:var(--mono);font-size:13px;" />
+                            <v-text-field v-model="tables.caption" label="Table caption / description (optional)"
+                                variant="outlined" hide-details class="mt-3" density="compact" />
+                        </div>
+
+                        <!-- Results -->
+                        <div v-if="tables.origHtml">
+                            <!-- Issues full width -->
+                            <div class="panel mb-4">
+                                <div
+                                    style="display:flex;align-items:center;gap:12px;margin-bottom:12px;flex-wrap:wrap;">
+                                    <div class="panel-title" style="margin:0;">Issues Fixed</div>
+                                    <div style="display:flex;gap:8px;flex-wrap:wrap;">
+                                        <div v-if="tables.issues.length===0" class="summary-chip chip-clean"><i
+                                                class="mdi mdi-check-circle" style="font-size:13px;"></i> No issues
+                                            found</div>
+                                        <template v-else>
+                                            <div v-if="tables.issues.filter(i=>i.level==='error').length"
+                                                class="summary-chip chip-error"> <i class="mdi mdi-close-circle"
+                                                    style="font-size:12px;"></i>
+                                                {{tables.issues.filter(i=>i.level==='error').length}}
+                                                error{{tables.issues.filter(i=>i.level==='error').length>1?'s':''}}
+                                            </div>
+                                            <div v-if="tables.issues.filter(i=>i.level==='warning').length"
+                                                class="summary-chip chip-warning"><i class="mdi mdi-alert"
+                                                    style="font-size:12px;"></i>
+                                                {{tables.issues.filter(i=>i.level==='warning').length}}
+                                                warning{{tables.issues.filter(i=>i.level==='warning').length>1?'s':''}}
+                                            </div>
+                                            <div v-if="tables.issues.filter(i=>i.level==='info').length"
+                                                class="summary-chip chip-info"> <i class="mdi mdi-information"
+                                                    style="font-size:12px;"></i>
+                                                {{tables.issues.filter(i=>i.level==='info').length}}
+                                                suggestion{{tables.issues.filter(i=>i.level==='info').length>1?'s':''}}
+                                            </div>
+                                        </template>
+                                    </div>
+                                </div>
+                                <div v-if="tables.issues.length===0" class="empty" style="min-height:80px;"><i
+                                        class="mdi mdi-check-circle"></i> Your table HTML passes all checks.</div>
+                                <div v-else
+                                    style="display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:8px;">
+                                    <div v-for="(iss,i) in tables.issues" :key="i" class="issue-item"
+                                        :class="'lvl-'+iss.level">
+                                        <span class="badge"
+                                            :class="'badge-'+iss.level">{{iss.level.toUpperCase()}}</span>
+                                        <div>
+                                            <div><code class="issue-elem">&lt;{{iss.el}}&gt;</code><span
+                                                    class="issue-text">{{iss.msg}}</span></div>
+                                            <div v-if="iss.fix" class="issue-fix"><i class="mdi mdi-auto-fix"></i>
+                                                {{iss.fix}}</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Side-by-side: Original | Fixed -->
+                            <v-row>
+                                <v-col cols="12" md="6">
+                                    <div class="panel">
+                                        <div class="panel-title">Original HTML</div>
+                                        <div class="code-wrap">
+                                            <div class="code-bar"><span class="dot dot-r"></span><span
+                                                    class="dot dot-y"></span><span class="dot dot-g"></span><span
+                                                    class="code-bar-label">HTML</span></div>
+                                            <div class="code-box mb-3" style="max-height:220px;overflow:auto;">
+                                                {{tables.origHtml}}</div>
+                                        </div>
+                                        <div class="panel-title">Original Render</div>
+                                        <div class="render-wrap">
+                                            <div class="render-bar"><span class="dot dot-r"></span><span
+                                                    class="dot dot-y"></span><span class="dot dot-g"></span><span
+                                                    class="render-bar-label">Preview</span></div>
+                                            <div class="render-box" v-html="tables.origHtml"></div>
+                                        </div>
+                                    </div>
+                                </v-col>
+                                <v-col cols="12" md="6">
+                                    <div class="panel">
+                                        <div
+                                            style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">
+                                            <div class="panel-title" style="margin:0;">Fixed HTML</div>
+                                            <v-btn size="x-small" variant="tonal" color="orange-lighten-1" rounded
+                                                @click="copy(tables.newHtml)">
+                                                <v-icon start size="13">mdi-content-copy</v-icon> Copy
+                                            </v-btn>
+                                        </div>
+                                        <div class="code-wrap">
+                                            <div class="code-bar"><span class="dot dot-r"></span><span
+                                                    class="dot dot-y"></span><span class="dot dot-g"></span><span
+                                                    class="code-bar-label">HTML</span></div>
+                                            <div class="code-box mb-3" style="max-height:220px;overflow:auto;">
+                                                {{tables.newHtml}}</div>
+                                        </div>
+                                        <div class="panel-title">Fixed Render</div>
+                                        <div class="render-wrap">
+                                            <div class="render-bar"><span class="dot dot-r"></span><span
+                                                    class="dot dot-y"></span><span class="dot dot-g"></span><span
+                                                    class="render-bar-label">Preview</span></div>
+                                            <div class="render-box" v-html="tables.newHtml"></div>
+                                        </div>
+                                    </div>
+                                </v-col>
+                            </v-row>
+                        </div>
+                        <div v-else class="empty" style="margin-top:32px;"><i class="mdi mdi-table-edit"></i> Paste
+                            table HTML above and click <strong style="color:#ffb74d;margin:0 4px;">Fix Table</strong> to
+                            begin.</div>
+                    </div>
+
+                    <!-- ════════════════════════════════════════════ -->
+                    <!-- ARIA BUILDER                                 -->
+                    <!-- ════════════════════════════════════════════ -->
+                    <div v-if="view==='aria'">
+                        <div class="tool-hdr" style="--hdr-color:#880e4f;">
+                            <div class="tool-hdr-icon" style="background:#880e4f;">
+                                <i class="mdi mdi-tag-plus-outline"></i>
+                            </div>
+                            <div>
+                                <div class="tool-hdr-title">ARIA Attribute Builder</div>
+                                <div class="tool-hdr-sub">Add any ARIA attribute to any element by ID. See before and
+                                    after.</div>
+                            </div>
+                        </div>
+                        <!-- Config + Input -->
+                        <div class="panel mb-4">
+                            <v-row dense class="mb-3">
+                                <v-col cols="12" sm="4">
+                                    <v-text-field v-model="aria.id" label="Element ID to target" variant="outlined"
+                                        hide-details density="compact" />
+                                </v-col>
+                                <v-col cols="12" sm="4">
+                                    <v-select v-model="aria.attr" :items="ariaAttrs" label="ARIA Attribute"
+                                        variant="outlined" hide-details density="compact" />
+                                </v-col>
+                                <v-col cols="12" sm="4">
+                                    <v-text-field v-model="aria.value" label="Value" variant="outlined" hide-details
+                                        density="compact" />
+                                </v-col>
+                            </v-row>
+                            <div class="d-flex align-center gap-2 mb-3" style="flex-wrap:wrap;">
+                                <div class="panel-title" style="margin:0;flex:1;">Paste your HTML</div>
+                                <v-btn color="pink-lighten-2" rounded="lg" size="small" @click="doAria">
+                                    <v-icon start size="15">mdi-tag-plus-outline</v-icon> Apply Attribute
+                                </v-btn>
+                                <v-btn variant="tonal" rounded="lg" size="small" @click="loadAriaExample">
+                                    <v-icon start size="15">mdi-code-tags</v-icon> Load Example
+                                </v-btn>
+                                <v-btn variant="text" rounded="lg" size="small" @click="resetAria">
+                                    <v-icon start size="15">mdi-refresh</v-icon> Reset
+                                </v-btn>
+                            </div>
+                            <v-textarea v-model="aria.input" variant="outlined" rows="5" no-resize hide-details
+                                autocomplete="off" spellcheck="false" style="font-family:var(--mono);font-size:13px;" />
+                        </div>
+
+                        <!-- Results -->
+                        <div v-if="aria.origHtml">
+                            <v-row>
+                                <v-col cols="12" md="6">
+                                    <div class="panel">
+                                        <div class="panel-title">Original HTML</div>
+                                        <div class="code-wrap">
+                                            <div class="code-bar"><span class="dot dot-r"></span><span
+                                                    class="dot dot-y"></span><span class="dot dot-g"></span><span
+                                                    class="code-bar-label">HTML</span></div>
+                                            <div class="code-box mb-3" style="max-height:220px;overflow:auto;">
+                                                {{aria.origHtml}}</div>
+                                        </div>
+                                        <div class="panel-title">Original Render</div>
+                                        <div class="render-wrap">
+                                            <div class="render-bar"><span class="dot dot-r"></span><span
+                                                    class="dot dot-y"></span><span class="dot dot-g"></span><span
+                                                    class="render-bar-label">Preview</span></div>
+                                            <div class="render-box" v-html="aria.origHtml"></div>
+                                        </div>
+                                    </div>
+                                </v-col>
+                                <v-col cols="12" md="6">
+                                    <div class="panel">
+                                        <div
+                                            style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">
+                                            <div class="panel-title" style="margin:0;">Updated HTML</div>
+                                            <v-btn size="x-small" variant="tonal" color="pink-lighten-2" rounded
+                                                @click="copy(aria.newHtml)">
+                                                <v-icon start size="13">mdi-content-copy</v-icon> Copy
+                                            </v-btn>
+                                        </div>
+                                        <div class="code-wrap">
+                                            <div class="code-bar"><span class="dot dot-r"></span><span
+                                                    class="dot dot-y"></span><span class="dot dot-g"></span><span
+                                                    class="code-bar-label">HTML</span></div>
+                                            <div class="code-box mb-3" style="max-height:220px;overflow:auto;">
+                                                {{aria.newHtml}}</div>
+                                        </div>
+                                        <div class="panel-title">Updated Render <span
+                                                style="font-size:10px;opacity:.4;text-transform:none;letter-spacing:0;font-weight:400;">(visually
+                                                identical, more accessible)</span></div>
+                                        <div class="render-wrap">
+                                            <div class="render-bar"><span class="dot dot-r"></span><span
+                                                    class="dot dot-y"></span><span class="dot dot-g"></span><span
+                                                    class="render-bar-label">Preview</span></div>
+                                            <div class="render-box" v-html="aria.newHtml"></div>
+                                        </div>
+                                    </div>
+                                </v-col>
+                            </v-row>
+                        </div>
+                        <div v-else class="empty" style="margin-top:32px;"><i class="mdi mdi-tag-plus-outline"></i> Fill
+                            in the fields above, paste HTML, then click <strong
+                                style="color:#f48fb1;margin:0 4px;">Apply Attribute</strong> to begin.</div>
+                    </div>
+
+                </div>
+            </v-main>
+
+            <!-- Snackbar -->
+            <v-snackbar v-model="snack" timeout="1600" color="#1a2640" location="bottom right" rounded="lg"
+                border="start" border-color="#7b8cff">
+                <v-icon start size="15" color="#7b8cff">mdi-check-circle</v-icon>
+                <span style="font-size:13px;">Copied to clipboard</span>
+            </v-snackbar>
+
+        </v-app>
     </div>
-    <footer class="footer">
-        <p class="copyright">
-            &copy; Paul Ross | 2023
-        </p>
-    </footer>
-    <script src="myscript.js"></script>
+
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vuetify@3.4.0/dist/vuetify.min.js"></script>
+    <script>
+        const { createApp, ref, reactive, computed } = Vue;
+        const { createVuetify } = Vuetify;
+
+        const vuetify = createVuetify({
+            theme: {
+                defaultTheme: 'dark',
+                themes: { dark: { colors: { background: '#0d0d1a', surface: '#13132a', primary: '#7b8cff' } } }
+            }
+        });
+
+        // ─────────────────────────────────────────────────────────
+        //  CORE ACCESSIBILITY ENGINE
+        // ─────────────────────────────────────────────────────────
+        function parse(html) {
+            return new DOMParser().parseFromString(html, 'text/html');
+        }
+
+        function serialize(doc) {
+            return doc.body.innerHTML;
+        }
+
+        // Non-descriptive link texts
+        const BAD_LINK_TEXT = new Set(['click here', 'here', 'read more', 'more', 'link', 'click', 'this', 'learn more', 'go']);
+
+        function runChecks(doc, issues) {
+            // 1. Images missing alt
+            doc.querySelectorAll('img:not([alt])').forEach(img => {
+                const src = img.getAttribute('src') || '';
+                const name = src.split('/').pop().split('.')[0].replace(/[-_]/g, ' ') || 'image';
+                img.setAttribute('alt', `TODO: describe this image (${name})`);
+                issues.push({ level: 'error', el: 'img', msg: 'Missing alt attribute — screen readers cannot describe this image.', fix: `Added alt="TODO: describe this image (${name})"` });
+            });
+
+            // 2. Images with empty alt but not marked decorative
+            doc.querySelectorAll('img[alt=""]').forEach(img => {
+                if (!img.getAttribute('role') && !img.getAttribute('aria-hidden')) {
+                    img.setAttribute('role', 'presentation');
+                    img.setAttribute('aria-hidden', 'true');
+                    issues.push({ level: 'info', el: 'img', msg: 'Empty alt="" — assumed decorative.', fix: 'Added role="presentation" aria-hidden="true"' });
+                }
+            });
+
+            // 3. Buttons without accessible name
+            doc.querySelectorAll('button').forEach(btn => {
+                const text = btn.textContent.trim();
+                const hasName = text || btn.getAttribute('aria-label') || btn.getAttribute('aria-labelledby') || btn.getAttribute('title');
+                if (!hasName) {
+                    btn.setAttribute('aria-label', 'TODO: add button label');
+                    issues.push({ level: 'error', el: 'button', msg: 'Button has no accessible name — screen reader users won\'t know what it does.', fix: 'Added aria-label="TODO: add button label"' });
+                }
+            });
+
+            // 4. Links with non-descriptive text
+            doc.querySelectorAll('a').forEach(a => {
+                const text = a.textContent.trim().toLowerCase();
+                const hasLabel = a.getAttribute('aria-label');
+                if (!hasLabel && BAD_LINK_TEXT.has(text)) {
+                    a.setAttribute('aria-label', `TODO: describe where this link goes`);
+                    issues.push({ level: 'warning', el: 'a', msg: `Link text "${text}" is not descriptive — screen readers rely on link text for context.`, fix: 'Added aria-label placeholder' });
+                }
+                // Links that open new tab
+                if (a.getAttribute('target') === '_blank' && !a.getAttribute('aria-label')?.includes('new tab') && !a.textContent.includes('new tab')) {
+                    const existing = a.getAttribute('aria-label') || a.textContent.trim();
+                    a.setAttribute('aria-label', existing + ' (opens in new tab)');
+                    issues.push({ level: 'info', el: 'a', msg: 'Link opens in new tab without warning.', fix: 'Appended "(opens in new tab)" to aria-label' });
+                }
+            });
+
+            // 5. Inputs without labels
+            doc.querySelectorAll('input, textarea, select').forEach(el => {
+                const type = el.getAttribute('type') || '';
+                if (['hidden', 'submit', 'button', 'reset', 'image'].includes(type)) return;
+                const id = el.getAttribute('id');
+                const hasLabel = (id && doc.querySelector(`label[for="${id}"]`)) || el.closest('label');
+                const hasAria = el.getAttribute('aria-label') || el.getAttribute('aria-labelledby');
+                if (!hasLabel && !hasAria) {
+                    const tag = el.tagName.toLowerCase();
+                    const placeholder = el.getAttribute('placeholder') || el.getAttribute('name') || el.getAttribute('type') || 'field';
+                    el.setAttribute('aria-label', `TODO: label for ${placeholder}`);
+                    issues.push({ level: 'error', el: tag, msg: 'Form control has no associated label — required for screen reader accessibility.', fix: `Added aria-label="TODO: label for ${placeholder}"` });
+                }
+            });
+
+            // 6. Submit/button inputs without value
+            doc.querySelectorAll('input[type="submit"], input[type="button"], input[type="reset"]').forEach(el => {
+                if (!el.getAttribute('value') && !el.getAttribute('aria-label')) {
+                    el.setAttribute('aria-label', 'TODO: add button label');
+                    issues.push({ level: 'warning', el: 'input', msg: `Input type="${el.type}" has no value or aria-label.`, fix: 'Added aria-label placeholder' });
+                }
+            });
+
+            // 7. Clickable non-interactive elements
+            doc.querySelectorAll('[onclick]').forEach(el => {
+                const tag = el.tagName.toLowerCase();
+                if (['button', 'a', 'input', 'select', 'textarea'].includes(tag)) return;
+                if (!el.getAttribute('role')) {
+                    el.setAttribute('role', 'button');
+                    issues.push({ level: 'error', el: tag, msg: 'Clickable element is not a native interactive element — missing role="button".', fix: 'Added role="button"' });
+                }
+                if (el.getAttribute('tabindex') === null) {
+                    el.setAttribute('tabindex', '0');
+                    issues.push({ level: 'warning', el: tag, msg: 'Clickable element cannot be focused via keyboard.', fix: 'Added tabindex="0"' });
+                }
+            });
+
+            // 8. Tables
+            doc.querySelectorAll('table').forEach(table => {
+                if (!table.getAttribute('role')) {
+                    table.setAttribute('role', 'table');
+                }
+                // th without scope
+                table.querySelectorAll('th').forEach(th => {
+                    if (!th.getAttribute('scope')) {
+                        const row = th.closest('tr');
+                        const isRowHeader = row && row.cells[0] === th && row.rowIndex > 0;
+                        const scopeVal = isRowHeader ? 'row' : 'col';
+                        th.setAttribute('scope', scopeVal);
+                        issues.push({ level: 'error', el: 'th', msg: 'Table header missing scope attribute — needed for screen readers to associate headers with cells.', fix: `Added scope="${scopeVal}"` });
+                    }
+                });
+                // No caption
+                if (!table.querySelector('caption')) {
+                    issues.push({ level: 'warning', el: 'table', msg: 'Table missing <caption> — adds context for screen reader users.', fix: 'Consider adding <caption> inside <table>' });
+                }
+                // No thead
+                if (!table.querySelector('thead') && table.querySelector('th')) {
+                    issues.push({ level: 'info', el: 'table', msg: 'Table has <th> elements but no <thead> — consider grouping header rows in <thead>.' });
+                }
+            });
+
+            // 9. Heading hierarchy
+            const headings = Array.from(doc.querySelectorAll('h1,h2,h3,h4,h5,h6'));
+            let prev = 0;
+            headings.forEach(h => {
+                const level = parseInt(h.tagName[1]);
+                if (prev > 0 && level > prev + 1) {
+                    issues.push({ level: 'warning', el: h.tagName.toLowerCase(), msg: `Heading skips from h${prev} to h${level} — heading levels should only increase by one.` });
+                }
+                prev = level;
+            });
+
+            // 10. Images used as links
+            doc.querySelectorAll('a > img, a img').forEach(img => {
+                const link = img.closest('a');
+                const linkText = link.textContent.trim();
+                const alt = img.getAttribute('alt');
+                if (!linkText && (!alt || alt.startsWith('TODO'))) {
+                    const newAlt = 'TODO: describe link destination for this image';
+                    img.setAttribute('alt', newAlt);
+                    issues.push({ level: 'error', el: 'img', msg: 'Image inside link has no alt text — the link has no accessible name.', fix: `Updated alt="${newAlt}"` });
+                }
+            });
+        }
+
+        // ─────────────────────────────────────────────────────────
+        //  FORM-SPECIFIC CHECKS
+        // ─────────────────────────────────────────────────────────
+        function runFormChecks(doc, issues) {
+            // All the input/textarea/select checks
+            runChecks(doc, issues);
+
+            // Form element itself
+            doc.querySelectorAll('form').forEach(form => {
+                if (!form.getAttribute('aria-label') && !form.getAttribute('aria-labelledby')) {
+                    const firstLegend = form.querySelector('legend');
+                    const firstH = form.querySelector('h1,h2,h3,h4,h5,h6');
+                    if (firstLegend) {
+                        form.setAttribute('aria-labelledby', firstLegend.id || (firstLegend.id = 'form-legend-' + Date.now()));
+                        issues.push({ level: 'info', el: 'form', msg: 'Form has no aria-label.', fix: 'Added aria-labelledby pointing to legend' });
+                    } else {
+                        form.setAttribute('aria-label', 'TODO: describe this form');
+                        issues.push({ level: 'warning', el: 'form', msg: 'Form has no accessible name — screen reader users won\'t know its purpose.', fix: 'Added aria-label="TODO: describe this form"' });
+                    }
+                }
+                // Required fields without aria-required
+                form.querySelectorAll('[required]').forEach(el => {
+                    if (!el.getAttribute('aria-required')) {
+                        el.setAttribute('aria-required', 'true');
+                        issues.push({ level: 'warning', el: el.tagName.toLowerCase(), msg: 'Required field missing aria-required="true".', fix: 'Added aria-required="true"' });
+                    }
+                });
+            });
+
+            // Fieldset/legend check
+            doc.querySelectorAll('fieldset').forEach(fs => {
+                if (!fs.querySelector('legend')) {
+                    const legend = doc.createElement('legend');
+                    legend.textContent = 'TODO: add group label';
+                    fs.prepend(legend);
+                    issues.push({ level: 'error', el: 'fieldset', msg: 'Fieldset missing <legend> — groups of controls need a label.', fix: 'Added <legend>TODO: add group label</legend>' });
+                }
+            });
+
+            // Radio/checkbox groups without fieldset
+            const radioNames = {};
+            doc.querySelectorAll('input[type="radio"], input[type="checkbox"]').forEach(el => {
+                const name = el.getAttribute('name');
+                if (name) { radioNames[name] = (radioNames[name] || 0) + 1; }
+            });
+            Object.entries(radioNames).forEach(([name, count]) => {
+                if (count > 1) {
+                    const inFieldset = doc.querySelector(`input[name="${name}"]`)?.closest('fieldset');
+                    if (!inFieldset) {
+                        issues.push({ level: 'warning', el: 'input', msg: `Radio/checkbox group name="${name}" is not inside a <fieldset> — grouped controls should be wrapped in fieldset+legend.` });
+                    }
+                }
+            });
+        }
+
+        // ─────────────────────────────────────────────────────────
+        //  TABLE-SPECIFIC CHECKS
+        // ─────────────────────────────────────────────────────────
+        function runTableChecks(doc, issues, captionText) {
+            doc.querySelectorAll('table').forEach(table => {
+                table.setAttribute('role', 'table');
+
+                // Caption
+                let caption = table.querySelector('caption');
+                if (!caption) {
+                    caption = doc.createElement('caption');
+                    caption.textContent = captionText || 'TODO: add table description';
+                    table.prepend(caption);
+                    issues.push({ level: 'warning', el: 'table', msg: 'Table missing <caption>.', fix: `Added <caption>${caption.textContent}</caption>` });
+                }
+
+                // scope on all th
+                table.querySelectorAll('th').forEach((th, idx) => {
+                    if (!th.getAttribute('scope')) {
+                        const row = th.closest('tr');
+                        const isRowHeader = row && row.cells[0] === th && row.rowIndex > 0;
+                        const s = isRowHeader ? 'row' : 'col';
+                        th.setAttribute('scope', s);
+                        issues.push({ level: 'error', el: 'th', msg: 'Table header missing scope.', fix: `Added scope="${s}"` });
+                    }
+                });
+
+                // thead/tbody
+                const hasHead = table.querySelector('thead');
+                if (!hasHead) {
+                    const firstRow = table.querySelector('tr');
+                    if (firstRow && firstRow.querySelector('th')) {
+                        const thead = doc.createElement('thead');
+                        firstRow.parentNode.insertBefore(thead, firstRow);
+                        thead.appendChild(firstRow);
+                        issues.push({ level: 'info', el: 'table', msg: 'No <thead> found — wrapped first header row in <thead>.', fix: 'Wrapped header row in <thead>' });
+                    }
+                }
+
+                // tbody
+                if (!table.querySelector('tbody')) {
+                    const tbody = doc.createElement('tbody');
+                    const rows = Array.from(table.querySelectorAll('tr')).filter(r => !r.closest('thead'));
+                    if (rows.length) {
+                        rows[0].parentNode.insertBefore(tbody, rows[0]);
+                        rows.forEach(r => tbody.appendChild(r));
+                        issues.push({ level: 'info', el: 'table', msg: 'No <tbody> found — wrapped data rows in <tbody>.', fix: 'Wrapped data rows in <tbody>' });
+                    }
+                }
+
+                // Empty cells
+                table.querySelectorAll('td, th').forEach(cell => {
+                    if (!cell.textContent.trim() && !cell.getAttribute('aria-label')) {
+                        cell.setAttribute('aria-label', 'empty');
+                        issues.push({ level: 'info', el: cell.tagName.toLowerCase(), msg: 'Empty cell — added aria-label="empty" for clarity.', fix: 'Added aria-label="empty"' });
+                    }
+                });
+            });
+        }
+
+        // ─────────────────────────────────────────────────────────
+        //  VUE APP
+        // ─────────────────────────────────────────────────────────
+        createApp({
+            setup() {
+                const view = ref('home');
+                const snack = ref(false);
+
+                function navigate(id) {
+                    view.value = id;
+                    if (typeof window.trackTool === 'function') window.trackTool(id);
+                }
+
+                const tools = [
+                    { id: 'scanner', name: 'A11y Scanner', icon: 'mdi-magnify-scan', color: '#4527a0', desc: 'Paste any HTML — detect every WCAG issue and auto-fix what can be automated.' },
+                    { id: 'contrast', name: 'Color Contrast', icon: 'mdi-contrast-circle', color: '#1a237e', desc: 'Check any foreground/background pair against WCAG 2.1 AA and AAA thresholds.' },
+                    { id: 'forms', name: 'Form Fixer', icon: 'mdi-form-select', color: '#00695c', desc: 'Fix labels, fieldsets, aria-required, and role attributes in form HTML.' },
+                    { id: 'tables', name: 'Table Fixer', icon: 'mdi-table-edit', color: '#e65100', desc: 'Add scope, caption, thead/tbody, and roles to make tables screen-reader ready.' },
+                    { id: 'aria', name: 'ARIA Builder', icon: 'mdi-tag-plus-outline', color: '#880e4f', desc: 'Apply any ARIA attribute to any element by ID and see the result instantly.' },
+                ];
+
+                function copy(txt) {
+                    navigator.clipboard.writeText(txt || '').then(() => snack.value = true);
+                }
+
+                // ── SCANNER ─────────────────────────────────────
+                const scanner = reactive({ input: '', ran: false, issues: [], fixed: '' });
+                const counts = computed(() => ({
+                    error: scanner.issues.filter(i => i.level === 'error').length,
+                    warning: scanner.issues.filter(i => i.level === 'warning').length,
+                    info: scanner.issues.filter(i => i.level === 'info').length,
+                }));
+
+                const EXAMPLE = `<img src="team-photo.jpg">
+<img src="decorative-banner.png" alt="">
+<button>✕</button>
+<a href="/about">click here</a>
+<input type="text" placeholder="Your email">
+<div onclick="submitForm()" style="cursor:pointer;padding:8px 16px;background:#0070f3;color:#fff;display:inline-block;border-radius:4px;">Submit</div>
+<table>
+  <tr><th>Product</th><th>Price</th><th>Stock</th></tr>
+  <tr><td>Widget A</td><td>$9.99</td><td>42</td></tr>
+  <tr><td>Widget B</td><td>$14.99</td><td>0</td></tr>
+</table>`;
+
+                function loadExample() { scanner.input = EXAMPLE; }
+                function resetScanner() { scanner.input = ''; scanner.ran = false; scanner.issues = []; scanner.fixed = ''; }
+
+                const FORM_EXAMPLE = `<form>
+  <input type="text" placeholder="First name">
+  <input type="text" placeholder="Last name">
+  <input type="email" placeholder="Email address">
+  <input type="password" placeholder="Password">
+  <select>
+    <option>Choose a country</option>
+    <option>United States</option>
+    <option>Canada</option>
+  </select>
+  <textarea placeholder="Tell us about yourself"></textarea>
+  <input type="checkbox"> I agree to the terms
+  <input type="submit" value="Create Account">
+</form>`;
+                function loadFormExample() { forms.input = FORM_EXAMPLE; }
+
+                const TABLE_EXAMPLE = `<table>
+  <tr>
+    <th>Name</th>
+    <th>Department</th>
+    <th>Start Date</th>
+    <th>Status</th>
+  </tr>
+  <tr>
+    <td>Alice Johnson</td>
+    <td>Engineering</td>
+    <td>2021-03-15</td>
+    <td>Active</td>
+  </tr>
+  <tr>
+    <td>Bob Martinez</td>
+    <td>Design</td>
+    <td>2022-07-01</td>
+    <td>Active</td>
+  </tr>
+  <tr>
+    <td>Carol White</td>
+    <td>Marketing</td>
+    <td>2020-11-20</td>
+    <td>On Leave</td>
+  </tr>
+</table>`;
+                function loadTableExample() { tables.input = TABLE_EXAMPLE; tables.caption = ''; }
+
+                const ARIA_EXAMPLE = `<div id="confirm-dialog" role="dialog">
+  <h2>Delete Item</h2>
+  <p>Are you sure you want to delete this item? This action cannot be undone.</p>
+  <button onclick="confirmDelete()">Delete</button>
+  <button onclick="closeDialog()">Cancel</button>
+</div>`;
+                function loadAriaExample() {
+                    aria.input = ARIA_EXAMPLE;
+                    aria.id = 'confirm-dialog';
+                    aria.attr = 'aria-label';
+                    aria.value = 'Confirm Delete Dialog';
+                }
+
+                function runScanner() {
+                    if (!scanner.input.trim()) return;
+                    const doc = parse(scanner.input);
+                    const issues = [];
+                    runChecks(doc, issues);
+                    scanner.issues = issues;
+                    scanner.fixed = serialize(doc);
+                    scanner.ran = true;
+                }
+
+                // ── COLOR CONTRAST ───────────────────────────────
+                const cc = reactive({ fg: '#000000', bg: '#ffffff', ratio: null });
+                function lum(hex) {
+                    return [1, 3, 5].map(i => parseInt(hex.slice(i, i + 2), 16) / 255)
+                        .map(v => v <= .03928 ? v / 12.92 : Math.pow((v + .055) / 1.055, 2.4))
+                        .reduce((s, v, i) => s + v * [.2126, .7152, .0722][i], 0);
+                }
+                function doContrast() {
+                    try { const a = lum(cc.fg), b = lum(cc.bg); cc.ratio = (Math.max(a, b) + .05) / (Math.min(a, b) + .05); }
+                    catch { alert('Invalid hex color. Use #rrggbb format.'); }
+                }
+
+                // ── FORMS ────────────────────────────────────────
+                const forms = reactive({
+                    input: `<form>\n  <input type="text" placeholder="First name" required>\n  <input type="email" placeholder="Email" required>\n  <input type="password" placeholder="Password" required>\n  <fieldset>\n    <input type="radio" name="plan" value="free"> Free\n    <input type="radio" name="plan" value="pro"> Pro\n  </fieldset>\n  <button type="submit">Sign up</button>\n</form>`,
+                    origHtml: '', newHtml: '', issues: []
+                });
+                function runFormFixer() {
+                    if (!forms.input.trim()) return;
+                    const doc = parse(forms.input);
+                    const issues = [];
+                    runFormChecks(doc, issues);
+                    forms.origHtml = forms.input;
+                    forms.newHtml = serialize(doc);
+                    forms.issues = issues;
+                }
+
+                // ── TABLES ───────────────────────────────────────
+                const tables = reactive({
+                    input: `<table>\n  <tr><th>Name</th><th>Role</th><th>Dept</th></tr>\n  <tr><td>Alice</td><td>Engineer</td><td>Product</td></tr>\n  <tr><td>Bob</td><td>Designer</td><td></td></tr>\n</table>`,
+                    caption: 'Team members and their roles',
+                    origHtml: '', newHtml: '', issues: []
+                });
+                function runTableFixer() {
+                    if (!tables.input.trim()) return;
+                    const doc = parse(tables.input);
+                    const issues = [];
+                    runTableChecks(doc, issues, tables.caption);
+                    tables.origHtml = tables.input;
+                    tables.newHtml = serialize(doc);
+                    tables.issues = issues;
+                }
+
+                // ── ARIA BUILDER ─────────────────────────────────
+                const ariaAttrs = [
+                    'aria-label', 'aria-labelledby', 'aria-describedby', 'aria-hidden',
+                    'aria-expanded', 'aria-controls', 'aria-haspopup', 'aria-pressed',
+                    'aria-selected', 'aria-checked', 'aria-disabled', 'aria-required',
+                    'aria-live', 'aria-atomic', 'aria-relevant', 'aria-busy',
+                    'aria-current', 'aria-invalid', 'aria-modal', 'role'
+                ];
+                const aria = reactive({
+                    input: '<button id="menu-btn">☰</button>',
+                    id: 'menu-btn', attr: 'aria-label', value: 'Open navigation menu',
+                    origHtml: '', newHtml: ''
+                });
+                function doAria() {
+                    if (!aria.input.trim()) { alert('Please paste some HTML first.'); return; }
+                    const doc = parse(aria.input);
+                    let el = null;
+                    if (aria.id.trim()) {
+                        el = doc.getElementById(aria.id.trim());
+                        if (!el) { alert(`No element with id="${aria.id}" found. Check the ID or leave blank to target the first element.`); return; }
+                    } else {
+                        el = doc.body.firstElementChild;
+                        if (!el) { alert('No elements found in your HTML.'); return; }
+                    }
+                    el.setAttribute(aria.attr, aria.value);
+                    aria.origHtml = aria.input;
+                    aria.newHtml = serialize(doc);
+                }
+                function resetAria() { aria.origHtml = ''; aria.newHtml = ''; }
+
+                return {
+                    view, snack, tools, copy, navigate,
+                    scanner, counts, loadExample, resetScanner, runScanner,
+                    cc, doContrast,
+                    forms, runFormFixer, loadFormExample,
+                    tables, runTableFixer, loadTableExample,
+                    aria, ariaAttrs, doAria, resetAria, loadAriaExample,
+                };
+            }
+        }).use(vuetify).mount('#app');
+    </script>
 </body>
+
 </html>
